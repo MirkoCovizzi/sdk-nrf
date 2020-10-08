@@ -8,7 +8,8 @@
 #include <device.h>
 #include <zephyr.h>
 #include <zephyr/types.h>
-
+#include <hal/nrf_ipc.h>
+#include <nrfx_ipc.h>
 #include <bsd.h>
 #include <bsd_platform.h>
 
@@ -30,7 +31,9 @@ static sys_slist_t shutdown_threads;
 static bool first_time_init;
 static struct k_mutex slist_mutex;
 
+#if 0
 extern void ipc_proxy_irq_handler(void);
+#endif
 
 static int init_ret;
 
@@ -42,14 +45,23 @@ static int _bsdlib_init(const struct device *unused)
 		first_time_init = true;
 	}
 
+#if 0
 	/* Setup the network IRQ used by the BSD library.
 	 * Note: No call to irq_enable() here, that is done through bsd_init().
 	 */
 	IRQ_DIRECT_CONNECT(BSD_NETWORK_IRQ, BSD_NETWORK_IRQ_PRIORITY,
 			   ipc_proxy_irq_handler, 0);
+#else
+	IRQ_CONNECT(BSD_NETWORK_IRQ, BSD_NETWORK_IRQ_PRIORITY,
+		    nrfx_isr, nrfx_ipc_irq_handler, 0);
+#endif
 
 	const bsd_init_params_t init_params = {
+	#if CONFIG_BSD_LIBRARY_TRACE_ENABLED
 		.trace_on = true,
+	#else
+		.trace_on = false,
+	#endif
 		.bsd_memory_address = BSD_RESERVED_MEMORY_ADDRESS,
 		.bsd_memory_size = BSD_RESERVED_MEMORY_SIZE
 	};

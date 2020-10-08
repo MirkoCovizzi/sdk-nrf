@@ -4,6 +4,8 @@
  * SPDX-License-Identifier: LicenseRef-BSD-5-Clause-Nordic
  */
 
+#include "kernel.h"
+#include "nrfx_ipc.h"
 #include <string.h>
 #include <bsd_os.h>
 #include <bsd_platform.h>
@@ -354,6 +356,7 @@ void bsd_os_trace_irq_clear(void)
 	NVIC_ClearPendingIRQ(TRACE_IRQ);
 }
 
+#if 0
 ISR_DIRECT_DECLARE(ipc_proxy_irq_handler)
 {
 	IPC_IRQHandler();
@@ -362,6 +365,7 @@ ISR_DIRECT_DECLARE(ipc_proxy_irq_handler)
 
 	return 1; /* We should check if scheduling decision should be made */
 }
+#endif
 
 ISR_DIRECT_DECLARE(rpc_proxy_irq_handler)
 {
@@ -433,9 +437,45 @@ void trace_uart_init(void)
 #endif
 }
 
+/* Shared memory heap */
+static struct k_heap libmodem_shmem_heap;
+
+void *libmodem_os_shm_alloc(size_t bytes)
+{
+	return k_heap_alloc(&libmodem_shmem_heap, bytes, K_NO_WAIT);
+}
+void libmodem_os_shm_free(void *mem)
+{
+	k_heap_free(&libmodem_shmem_heap, mem);
+}
+
+/* Library heap */
+static K_HEAP_DEFINE(libmodem_heap, CONFIG_LIBMODEM_HEAP_SIZE);
+
+void *libmodem_os_alloc(size_t bytes)
+{
+	return k_heap_alloc(&libmodem_heap, bytes, K_NO_WAIT);
+}
+
+void libmodem_os_free(void *mem)
+{
+	k_heap_free(&libmodem_heap, mem);
+}
+
+
 /* This function is called by bsd_init and must not be called explicitly. */
 void bsd_os_init(void)
 {
+#ifdef CONFIG_NRF_SOCKETS_BUILD_FROM_SRC
+	k_heap_init(&libmodem_shmem_heap,
+		(void*)CONFIG_LIBMODEM_SHMEM_ADDR,
+		CONFIG_LIBMODEM_SHMEM_TX_SIZE);
+
+	printk("HEAP size: 0x%x\n", CONFIG_LIBMODEM_HEAP_SIZE);
+	printk("SHMEM start: 0x%x\n", CONFIG_LIBMODEM_SHMEM_ADDR);
+	printk("SHMEM size (tx): 0x%x\n", CONFIG_LIBMODEM_SHMEM_TX_SIZE);
+#endif
+
 	sys_slist_init(&sleeping_threads);
 	atomic_clear(&rpc_event_cnt);
 

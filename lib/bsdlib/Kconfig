@@ -10,7 +10,7 @@ config BSD_LIBRARY
 	prompt "Use BSD Socket library for IP/TLS/DTLS"
 	imply FPU
 	imply FPU_SHARING
-	select NET_SOCKETS_POSIX_NAMES
+	imply NET_SOCKETS_POSIX_NAMES
 	imply NET_SOCKETS_OFFLOAD
 	depends on TRUSTED_EXECUTION_NONSECURE
 	help
@@ -60,6 +60,28 @@ config BSD_LIBRARY_SENDMSG_BUF_SIZE
 	  in a static memory, so it does not impact stack/heap usage. In case
 	  the repacked message would not fit into the buffer, `sendmsg` sends
 	  each message part separately.
+
+# Redefinition from libmodem/nrfxlib
+if NRF_SOCKETS_BUILD_FROM_SRC
+config LIBMODEM_BASE_ADDR
+	hex "Library base RAM address"
+
+config LIBMODEM_SHMEM_ADDR
+	hex
+
+config LIBMODEM_SHMEM_TX_SIZE
+	int "Shared memory size (upload)"
+
+config LIBMODEM_SHMEM_RX_SIZE
+	int "Shared memory size (download)"
+
+config LIBMODEM_SHMEM_TRACE_SIZE
+	int "Shared memory size (trace)"
+	depends on BSD_LIBRARY_TRACE_ENABLED
+endif # NRF_SOCKETS_BUILD_FROM_SOURCE
+
+config LIBMODEM_HEAP_SIZE
+	int "Library heap memory size"
 
 endif # BSD_LIBRARY
 
