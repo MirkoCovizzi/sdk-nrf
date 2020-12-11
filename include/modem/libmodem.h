@@ -9,6 +9,14 @@ extern "C" {
 #endif
 
 /**
+ * @brief Return version string of the Modem library.
+ *
+ * @retval Version string if defined.
+ * @retval Empty string if version string is not defined.
+ */
+char *libmodem_version(void);
+
+/**
  * @brief Initialize the Modem library.
  *
  * This function is synchrounous and it could block

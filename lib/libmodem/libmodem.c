@@ -95,6 +95,11 @@ void libmodem_shutdown_wait(void)
 	k_mutex_unlock(&slist_mutex);
 }
 
+char *libmodem_version(void)
+{
+    return nrf_modem_version();
+}
+
 int libmodem_init(void)
 {
 	return _libmodem_init(NULL);
