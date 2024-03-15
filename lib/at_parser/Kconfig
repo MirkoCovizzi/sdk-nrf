@@ -1,0 +1,9 @@
+#
+# Copyright (c) 2024 Nordic Semiconductor ASA
+#
+# SPDX-License-Identifier: LicenseRef-Nordic-5-Clause
+#
+
+config AT_PARSER
+	bool "AT parser library"
+	depends on NEWLIB_LIBC || EXTERNAL_LIBC || PICOLIBC
