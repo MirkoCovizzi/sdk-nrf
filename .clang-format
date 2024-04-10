@@ -78,9 +78,11 @@ IncludeCategories:
   - Regex: '.*'
     Priority: 3
 IndentCaseLabels: false
+IndentGotoLabels: false
 IndentWidth: 8
 InsertBraces: true
 SpaceBeforeParens: ControlStatementsExceptControlMacros
+SpaceBeforeInheritanceColon: False
 SortIncludes: Never
 UseTab: Always
 WhitespaceSensitiveMacros:
