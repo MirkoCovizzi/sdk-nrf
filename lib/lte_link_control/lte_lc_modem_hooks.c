@@ -87,11 +87,13 @@ static void on_modem_init(int err, void *ctx)
 	(void)nrf_modem_at_printf("AT%%FEACONF=0,3,%d",
 		IS_ENABLED(CONFIG_LTE_PLMN_SELECTION_OPTIMIZATION));
 
+#if defined(CONFIG_LTE_LC_EDRX)
 	err = lte_lc_edrx_req(IS_ENABLED(CONFIG_LTE_EDRX_REQ));
 	if (err) {
 		LOG_ERR("Failed to configure eDRX, err %d", err);
 		return;
 	}
+#endif
 
 #if defined(CONFIG_LTE_LOCK_BANDS)
 	/* Set LTE band lock (volatile setting).
