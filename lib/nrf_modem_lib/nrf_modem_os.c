@@ -384,9 +384,26 @@ void *nrf_modem_os_shm_tx_alloc(size_t bytes)
 	return addr;
 }
 
+static void *free_pointer;
+static struct k_work_delayable free_work;
+
+static void free_work_fn(struct k_work *work)
+{
+	k_heap_free(&nrf_modem_lib_shmem_heap, free_pointer);
+}
+
 void nrf_modem_os_shm_tx_free(void *mem)
 {
-	k_heap_free(&nrf_modem_lib_shmem_heap, mem);
+	static int i = 1;
+
+	if (i % 10 == 0) {
+		free_pointer = mem;
+		k_work_schedule(&free_work, K_SECONDS(5));
+	} else {
+		k_heap_free(&nrf_modem_lib_shmem_heap, mem);
+	}
+
+	i++;
 }
 
 #if defined(CONFIG_LOG)
@@ -489,6 +506,7 @@ void nrf_modem_os_init(void)
 	k_heap_init(&nrf_modem_lib_heap, library_heap_buf, sizeof(library_heap_buf));
 	k_heap_init(&nrf_modem_lib_shmem_heap, (void *)PM_NRF_MODEM_LIB_TX_ADDRESS,
 		    CONFIG_NRF_MODEM_LIB_SHMEM_TX_SIZE);
+	k_work_init_delayable(&free_work, free_work_fn);
 }
 
 void nrf_modem_os_shutdown(void)
