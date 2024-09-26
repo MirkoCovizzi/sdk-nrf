@@ -1,0 +1,41 @@
+#
+# Copyright (c) 2024 Nordic Semiconductor ASA
+#
+# SPDX-License-Identifier: LicenseRef-Nordic-5-Clause
+#
+
+config LTE_LC_CONEVAL
+	bool ""
+	default n
+
+config LTE_LC_EDRX
+	bool ""
+	default n
+
+config LTE_LC_NCELLMEAS
+	bool ""
+	default n
+
+config LTE_LC_PERIODICSEARCHCONF
+	bool ""
+	default n
+
+config LTE_LC_PSM
+	bool ""
+	default n
+
+config LTE_LC_REDMOB
+	bool ""
+	default n
+
+config LTE_LC_XFACTORYRESET
+	bool ""
+	default n
+
+config LTE_LC_XMODEMSLEEP
+	bool ""
+	default n
+
+config LTE_LC_XT3412
+	bool ""
+	default n

@@ -66,6 +66,7 @@ config LTE_PSM_REQ
 	  If this option is set the library will automatically request PSM when
 	  the modem is initialized. This will cause the modem to include a PSM request in
 	  every subsequent LTE attach request.
+	select LTE_LC_PSM
 
 choice LTE_PSM_REQ_FORMAT
 	prompt "Format for PSM configuration"
@@ -129,6 +130,7 @@ config LTE_EDRX_REQ
 	help
 	  Enable request for use of eDRX using AT+CEDRXS.
 	  For reference, see 3GPP 27.007 Ch. 7.40.
+	select LTE_LC_EDRX
 
 config LTE_EDRX_REQ_VALUE_LTE_M
 	string "Requested eDRX value for LTE-M"
@@ -353,5 +355,7 @@ module = LTE_LINK_CONTROL
 module-dep = LOG
 module-str = LTE link control library
 source "${ZEPHYR_BASE}/subsys/logging/Kconfig.template.log_config"
+
+rsource "modules/Kconfig"
 
 endif # LTE_LINK_CONTROL
