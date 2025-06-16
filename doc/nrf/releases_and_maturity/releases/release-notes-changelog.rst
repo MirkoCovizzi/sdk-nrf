@@ -418,7 +418,9 @@ Security libraries
 Modem libraries
 ---------------
 
-|no_changes_yet_note|
+* :ref:`modem_battery_readme` library:
+
+  * Updated the range of the :kconfig:option:`CONFIG_MODEM_BATTERY_LOW_LEVEL` to align with `Battery voltage low level %XVBATLOWLVL`_.
 
 Multiprotocol Service Layer libraries
 -------------------------------------
